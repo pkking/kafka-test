@@ -1,0 +1,3 @@
+[submodule "kafka-lib"]
+	path = kafka-lib
+	url = ./kafka-lib
