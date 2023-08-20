@@ -1,0 +1,8 @@
+event: following
+limit:
+    count: 1
+    duration:
+        count: 1
+        unit: day
+action: decrease
+score: 5

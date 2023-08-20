@@ -1,3 +1,5 @@
 [submodule "kafka-lib"]
 	path = kafka-lib
-	url = ./kafka-lib
+	url = git@github.com:pkking/kafka-lib
+[submodule "./kafka-lib"]
+	branch = subscribe_multi_topic

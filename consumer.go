@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	kafka "github.com/opensourceways/kafka-lib/agent"
 )
@@ -15,8 +19,19 @@ func handler(msg []byte, header map[string]string) error {
 	//return nil
 }
 
-func main() {
+func testUnsubscribe() {
+	timer := time.After(120 * time.Second)
+	<-timer
+	fmt.Println("begin to exit kafka")
+	kafka.Exit()
+}
 
+func main() {
+	//rules, err := score.ParseRules("/home/lcr/kafka-test/")
+	//if err != nil {
+	//	log.Fatalf("failed to parse rules, %w", err)
+	//}
+	//fmt.Println(rules)
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s groupid\n",
 			os.Args[0])
@@ -28,7 +43,10 @@ func main() {
 	}
 
 	kafka.Init(conf, nil)
-
+	// 启动 HTTP 服务器
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
 	groupid := os.Args[1]
 	//conf := kafka.ConfigMap{
 	//	"bootstrap.servers":  "127.0.0.1:9092",
@@ -41,7 +59,7 @@ func main() {
 	// none: topic各分区都存在已提交的offset时，从offset后开始消费；只要有一个分区不存在已提交的offset，则抛出异常
 
 	//conf["auto.offset.reset"] = "earliest"
-
+	go testUnsubscribe()
 	e := kafka.SubscribeTopics([]string{"topic1", "topic2"}, groupid, handler)
 	//c, err := kafka.NewConsumer(&conf)
 
